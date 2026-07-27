@@ -135,7 +135,7 @@ export default function LandingPage() {
                   zIndex: -1,
                 }}
               >
-                MasynTech
+                Group
               </Text>
               <br />
               <Text as="span" color="blue.400">
@@ -216,7 +216,7 @@ export default function LandingPage() {
                 <HStack justify="space-between">
                   <HStack>
                     <Icon as={FiUsers} />
-                    <Text fontWeight="bold">Team MasynTech</Text>
+                    <Text fontWeight="bold">Team MERN Stack</Text>
                   </HStack>
                   <HStack spacing={4}>
                     <Badge colorScheme="green" variant="solid">

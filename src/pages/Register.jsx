@@ -6,10 +6,50 @@ import {
   Input,
   VStack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
+  const [formVal, setFormVal] = useState({
+    userName: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormVal((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const { data } = await axios.post(
+        "http://localhost:3000/api/users/register",
+        formVal,
+      );
+      setFormVal({ userName: "", email: "", password: "" });
+      navigate("/login");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error?.response?.data?.message || "an error occured!",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Box
       w="100%"
@@ -85,9 +125,12 @@ const Register = () => {
                 size="lg"
                 bg="gray.50"
                 borderColor="gray.200"
+                name="userName"
                 _hover={{ borderColor: "indigo.500" }}
                 _focus={{ borderColor: "indigo.500" }}
                 placeholder="Choose a username"
+                onChange={(e) => handleChange(e)}
+                value={formVal.userName}
               />
             </FormControl>
 
@@ -99,10 +142,13 @@ const Register = () => {
                 type="email"
                 size="lg"
                 bg="gray.50"
+                name="email"
                 borderColor="gray.200"
                 _hover={{ borderColor: "indigo.500" }}
                 _focus={{ borderColor: "indigo.500" }}
                 placeholder="Enter your email"
+                onChange={(e) => handleChange(e)}
+                value={formVal.email}
               />
             </FormControl>
 
@@ -112,12 +158,15 @@ const Register = () => {
               </FormLabel>
               <Input
                 type="password"
+                name="password"
                 size="lg"
                 bg="gray.50"
                 borderColor="gray.200"
                 _hover={{ borderColor: "indigo.500" }}
                 _focus={{ borderColor: "indigo.500" }}
                 placeholder="Create a password"
+                onChange={(e) => handleChange(e)}
+                value={formVal.password}
               />
             </FormControl>
 
@@ -128,8 +177,10 @@ const Register = () => {
               _hover={{ scale: 1.05 }}
               transition="transform 0.2s"
               size="lg"
+              isLoading={isLoading}
               fontSize="md"
               mt={4}
+              onClick={(e) => handleSubmit(e)}
             >
               Create Account
             </Button>
