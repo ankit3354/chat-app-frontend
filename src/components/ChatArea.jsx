@@ -17,6 +17,8 @@ import UsersList from "./UsersList";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+
 const ChatArea = ({ selectedGroup, socket }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
@@ -95,7 +97,7 @@ const ChatArea = ({ selectedGroup, socket }) => {
     try {
       const token = curUser?.token;
       const { data } = await axios.get(
-        `http://localhost:3000/api/messages/${selectedGroup?._id}`,
+        `${REACT_APP_API_URL}/api/messages/${selectedGroup?._id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -121,7 +123,7 @@ const ChatArea = ({ selectedGroup, socket }) => {
     try {
       const token = curUser?.token;
       const { data } = await axios.post(
-        "http://localhost:3000/api/messages",
+        `${REACT_APP_API_URL}/api/messages`,
         {
           content: newMessage,
           groupId: selectedGroup?._id,

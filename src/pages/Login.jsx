@@ -13,6 +13,8 @@ import { FiLogIn } from "react-icons/fi";
 import { useState } from "react";
 import axios from "axios";
 
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+
 const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +34,7 @@ const Login = () => {
     setIsLoading(true);
     try {
       const { data } = await axios.post(
-        "http://localhost:3000/api/users/login",
+        `${REACT_APP_API_URL}/api/users/login`,
         formVal,
       );
       localStorage.setItem("userInfo", JSON.stringify(data));

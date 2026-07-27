@@ -24,6 +24,8 @@ import { useEffect, useState } from "react";
 import { FiLogOut, FiPlus, FiUsers } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+
 const Sidebar = ({ setSelectedGroup }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [newGroupVal, setNewGroupVal] = useState({
@@ -57,7 +59,7 @@ const Sidebar = ({ setSelectedGroup }) => {
     try {
       const token = userInfo?.token;
       const { data } = await axios.get(
-        "http://localhost:3000/api/groups",
+        `${REACT_APP_API_URL}/api/groups`,
         {},
         {
           headers: {
@@ -86,7 +88,7 @@ const Sidebar = ({ setSelectedGroup }) => {
       const userInfo = JSON.parse(localStorage.getItem("userInfo") || {});
       const token = userInfo?.token;
       const { data } = await axios.post(
-        "http://localhost:3000/api/groups",
+        `${REACT_APP_API_URL}/api/groups`,
         newGroupVal,
         {
           headers: {
@@ -119,7 +121,7 @@ const Sidebar = ({ setSelectedGroup }) => {
     const token = userInfo?.token;
     try {
       const { data } = await axios.post(
-        `http://localhost:3000/api/groups/${groupId}/join`,
+        `{REACT_APP_API_URL}/api/groups/${groupId}/join`,
         {},
         {
           headers: {
@@ -152,7 +154,7 @@ const Sidebar = ({ setSelectedGroup }) => {
     const token = userInfo?.token;
     try {
       const { data } = await axios.post(
-        `http://localhost:3000/api/groups/${groupId}/leave`,
+        `${REACT_APP_API_URL}/api/groups/${groupId}/leave`,
         {},
         {
           headers: {

@@ -13,6 +13,8 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+
 const Register = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +35,7 @@ const Register = () => {
     setIsLoading(true);
     try {
       const { data } = await axios.post(
-        "http://localhost:3000/api/users/register",
+        `${REACT_APP_API_URL}/api/users/register`,
         formVal,
       );
       setFormVal({ userName: "", email: "", password: "" });
