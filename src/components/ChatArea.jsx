@@ -17,7 +17,7 @@ import UsersList from "./UsersList";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+const REACT_APP_API_URL = import.meta.env.VITE_API_URL;
 
 const ChatArea = ({ selectedGroup, socket }) => {
   const [messages, setMessages] = useState([]);

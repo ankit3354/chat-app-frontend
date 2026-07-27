@@ -13,7 +13,7 @@ import { FiLogIn } from "react-icons/fi";
 import { useState } from "react";
 import axios from "axios";
 
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+const REACT_APP_API_URL = import.meta.env.VITE_API_URL;
 
 const Login = () => {
   const navigate = useNavigate();
@@ -30,6 +30,7 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
+    console.log("REACT_APP_API_URL", REACT_APP_API_URL);
     e.preventDefault();
     setIsLoading(true);
     try {
