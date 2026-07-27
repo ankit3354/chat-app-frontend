@@ -3,8 +3,7 @@ import Sidebar from "../components/Sidebar";
 import ChatArea from "../components/ChatArea";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
-const EndPoint =
-  "https://mern-group-chat-app.netlify.app/" || "http://localhost:3000";
+const EndPoint = "https://mern-group-chat-app.netlify.app/";
 
 const Chat = () => {
   const [selectedGroup, setSelectedGroup] = useState(null);
