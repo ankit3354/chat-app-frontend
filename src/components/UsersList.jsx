@@ -54,7 +54,7 @@ const UsersList = ({ users }) => {
         <VStack align="stretch" spacing={3}>
           {users.map((user) => (
             <Box key={user._id}>
-              <Tooltip label={`${user.username} is online`} placement="left">
+              <Tooltip label={`${user.userName} is online`} placement="left">
                 <Flex
                   p={3}
                   bg="white"
@@ -66,7 +66,7 @@ const UsersList = ({ users }) => {
                 >
                   <Avatar
                     size="sm"
-                    name={user.username}
+                    name={user.userName}
                     bg="blue.500"
                     color="white"
                     mr={3}
@@ -78,7 +78,7 @@ const UsersList = ({ users }) => {
                       color="gray.700"
                       noOfLines={1}
                     >
-                      {user.username}
+                      {user.userName}
                     </Text>
                   </Box>
                   <Flex

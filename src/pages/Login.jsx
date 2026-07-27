@@ -6,11 +6,55 @@ import {
   Input,
   VStack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiLogIn } from "react-icons/fi";
+import { useState } from "react";
+import axios from "axios";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
+  const [formVal, setFormVal] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormVal((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const { data } = await axios.post(
+        "http://localhost:3000/api/users/login",
+        formVal,
+      );
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      setFormVal({ email: "", password: "" });
+      navigate("/chat");
+      toast({
+        title: "Login successfully!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error?.response?.data?.message || "an error occured!",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      setIsLoading(false);
+    }
+  };
   return (
     <Box
       w="100%"
@@ -89,7 +133,10 @@ const Login = () => {
               </FormLabel>
               <Input
                 type="email"
+                name="email"
                 placeholder="Enter your email"
+                onChange={(e) => handleChange(e)}
+                value={formVal.email}
                 size="lg"
                 bg="gray.50"
                 borderColor="gray.200"
@@ -104,7 +151,10 @@ const Login = () => {
               </FormLabel>
               <Input
                 type="password"
+                name="password"
                 placeholder="Enter your password"
+                onChange={(e) => handleChange(e)}
+                value={formVal.password}
                 size="lg"
                 bg="gray.50"
                 borderColor="gray.200"
@@ -119,6 +169,7 @@ const Login = () => {
               size="lg"
               fontSize="md"
               leftIcon={<FiLogIn />}
+              onClick={(e) => handleSubmit(e)}
             >
               Sign In
             </Button>
