@@ -1,7 +1,6 @@
 import {
   Box,
   VStack,
-  HStack,
   Text,
   Input,
   Button,
@@ -12,7 +11,16 @@ import {
   InputRightElement,
   useToast,
 } from "@chakra-ui/react";
-import { FiSend, FiInfo, FiMessageCircle } from "react-icons/fi";
+import {
+  IconButton,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
+  useBreakpointValue,
+} from "@chakra-ui/react";
+import { FiSend, FiInfo, FiMessageCircle, FiUsers } from "react-icons/fi";
 import UsersList from "./UsersList";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
@@ -28,6 +36,8 @@ const ChatArea = ({ selectedGroup, socket }) => {
   const messagesEndRef = useRef(null);
   const typingTimeOutRef = useRef(null);
   const toast = useToast();
+  const isMobile = useBreakpointValue({ base: true, md: false });
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const curUser = JSON.parse(localStorage.getItem("userInfo")) || {};
 
@@ -189,7 +199,7 @@ const ChatArea = ({ selectedGroup, socket }) => {
     return typingUserArray.map((userName) => (
       <Box
         key={userName}
-        alignSelf={userName === curUser?.userName ? "flex-start" : "flex-end"}
+        alignSelf={userName === curUser?.userName ? "flex-end" : "flex-start"}
         maxW={"70%"}
       >
         <Flex
@@ -252,13 +262,13 @@ const ChatArea = ({ selectedGroup, socket }) => {
         display="flex"
         flexDirection="column"
         bg="gray.50"
-        maxW={`calc(100% - 260px)`}
+        maxW={isMobile ? "100%" : `calc(100% - 260px)`}
       >
         {selectedGroup ? (
           <>
             {/* Chat Header */}
             <Flex
-              px={6}
+              px={{ base: 3, md: 6 }}
               py={4}
               bg="white"
               borderBottom="1px solid"
@@ -271,15 +281,34 @@ const ChatArea = ({ selectedGroup, socket }) => {
                 fontSize="24px"
                 color="blue.500"
                 mr={3}
+                display={{ base: "none", sm: "block" }}
               />
-              <Box flex="1">
-                <Text fontSize="lg" fontWeight="bold" color="gray.800">
+              <Box flex="1" minW={0}>
+                <Text
+                  fontSize="lg"
+                  fontWeight="bold"
+                  color="gray.800"
+                  noOfLines={1}
+                >
                   {selectedGroup?.name}
                 </Text>
-                <Text fontSize="sm" color="gray.500">
+                <Text fontSize="sm" color="gray.500" noOfLines={1}>
                   {selectedGroup?.description}
                 </Text>
               </Box>
+
+              {/* Show users-list toggle only on mobile */}
+              {isMobile && (
+                <IconButton
+                  aria-label="Show members"
+                  icon={<FiUsers />}
+                  variant="ghost"
+                  colorScheme="blue"
+                  onClick={onOpen}
+                  mr={2}
+                />
+              )}
+
               <Icon
                 as={FiInfo}
                 fontSize="20px"
@@ -288,22 +317,19 @@ const ChatArea = ({ selectedGroup, socket }) => {
                 _hover={{ color: "blue.500" }}
               />
             </Flex>
+
             {/* Messages Area */}
             <VStack
               flex="1"
               overflowY="auto"
               spacing={4}
               align="stretch"
-              px={6}
+              px={{ base: 3, md: 6 }}
               py={4}
               position="relative"
               sx={{
-                "&::-webkit-scrollbar": {
-                  width: "8px",
-                },
-                "&::-webkit-scrollbar-track": {
-                  width: "10px",
-                },
+                "&::-webkit-scrollbar": { width: "8px" },
+                "&::-webkit-scrollbar-track": { width: "10px" },
                 "&::-webkit-scrollbar-thumb": {
                   background: "gray.200",
                   borderRadius: "24px",
@@ -315,10 +341,10 @@ const ChatArea = ({ selectedGroup, socket }) => {
                   key={message._id}
                   alignSelf={
                     message?.sender?._id === curUser._id
-                      ? "flex-start"
-                      : "flex-end"
+                      ? "flex-end"
+                      : "flex-start"
                   }
-                  maxW="70%"
+                  maxW={{ base: "85%", md: "70%" }}
                 >
                   <Flex direction="column" gap={1}>
                     <Flex
@@ -326,8 +352,8 @@ const ChatArea = ({ selectedGroup, socket }) => {
                       mb={1}
                       justifyContent={
                         message?.sender?._id === curUser._id
-                          ? "flex-start"
-                          : "flex-end"
+                          ? "flex-end"
+                          : "flex-start"
                       }
                       gap={2}
                     >
@@ -340,11 +366,11 @@ const ChatArea = ({ selectedGroup, socket }) => {
                         </>
                       ) : (
                         <>
+                          <Avatar size="xs" name={message?.sender?.userName} />
                           <Text fontSize="xs" color="gray.500">
                             {message.sender.username} •{" "}
                             {handleFormatTime(message.createdAt)}
                           </Text>
-                          <Avatar size="xs" name={message?.sender?.userName} />
                         </>
                       )}
                     </Flex>
@@ -372,9 +398,10 @@ const ChatArea = ({ selectedGroup, socket }) => {
               {renderTypingIndicator()}
               <div ref={messagesEndRef} />
             </VStack>
+
             {/* Message Input */}
             <Box
-              p={4}
+              p={{ base: 3, md: 4 }}
               bg="white"
               borderTop="1px solid"
               borderColor="gray.200"
@@ -389,10 +416,7 @@ const ChatArea = ({ selectedGroup, socket }) => {
                   pr="4.5rem"
                   bg="gray.50"
                   border="none"
-                  _focus={{
-                    boxShadow: "none",
-                    bg: "gray.100",
-                  }}
+                  _focus={{ boxShadow: "none", bg: "gray.100" }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       handleSendMessage();
@@ -405,9 +429,7 @@ const ChatArea = ({ selectedGroup, socket }) => {
                     size="sm"
                     colorScheme="blue"
                     borderRadius="full"
-                    _hover={{
-                      transform: "translateY(-1px)",
-                    }}
+                    _hover={{ transform: "translateY(-1px)" }}
                     transition="all 0.2s"
                     onClick={handleSendMessage}
                   >
@@ -418,48 +440,51 @@ const ChatArea = ({ selectedGroup, socket }) => {
             </Box>
           </>
         ) : (
-          <>
-            <Flex
-              h="100%"
-              direction="column"
-              align="center"
-              justify={"center"}
-              p={8}
-              textAlign={"center"}
-            >
-              <Icon
-                as={FiMessageCircle}
-                fontSize={"64px"}
-                color="gray.300"
-                mb={4}
-              />
-              <Text
-                fontSize={"xl"}
-                fontWeight={"medium"}
-                color={"gray.500"}
-                mb={2}
-              >
-                Welcome to the Chat
-              </Text>
-              <Text color={"gray.500"} mb={2}>
-                Select the group to Start Chatting.
-              </Text>
-            </Flex>
-          </>
+          <Flex
+            h="100%"
+            direction="column"
+            align="center"
+            justify="center"
+            p={8}
+            textAlign="center"
+          >
+            <Icon
+              as={FiMessageCircle}
+              fontSize="64px"
+              color="gray.300"
+              mb={4}
+            />
+            <Text fontSize="xl" fontWeight="medium" color="gray.500" mb={2}>
+              Welcome to the Chat
+            </Text>
+            <Text color="gray.500" mb={2}>
+              Select the group to Start Chatting.
+            </Text>
+          </Flex>
         )}
       </Box>
 
-      {/* UsersList with fixed width */}
-      <Box
-        width="260px"
-        position="sticky"
-        right={0}
-        top={0}
-        height="100%"
-        flexShrink={0}
-      >
-        {selectedGroup && <UsersList users={connectedUsers} />}
-      </Box>
+      {/* Desktop: fixed sidebar. Mobile: drawer */}
+      {isMobile ? (
+        <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+          <DrawerOverlay />
+          <DrawerContent maxW="260px">
+            <DrawerCloseButton zIndex={2} />
+            {selectedGroup && <UsersList users={connectedUsers} />}
+          </DrawerContent>
+        </Drawer>
+      ) : (
+        <Box
+          width="260px"
+          position="sticky"
+          right={0}
+          top={0}
+          height="100%"
+          flexShrink={0}
+        >
+          {selectedGroup && <UsersList users={connectedUsers} />}
+        </Box>
+      )}
     </Flex>
   );
 };

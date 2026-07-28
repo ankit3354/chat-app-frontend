@@ -198,12 +198,14 @@ const Sidebar = ({ setSelectedGroup }) => {
       bg="white"
       borderRight="1px"
       borderColor="gray.200"
-      width="300px"
+      width="100%"
       display="flex"
       flexDirection="column"
+      position="relative"
     >
       <Flex
         p={4}
+        pr={12}
         borderBottom="1px solid"
         borderColor="gray.200"
         bg="white"

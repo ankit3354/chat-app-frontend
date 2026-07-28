@@ -23,7 +23,7 @@ const UsersList = ({ users }) => {
     >
       {/* Header */}
       <Flex
-        p={5}
+        p={{ base: 4, md: 5 }}
         borderBottom="1px solid"
         borderColor="gray.200"
         bg="white"
