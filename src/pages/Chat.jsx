@@ -1,7 +1,6 @@
 import Sidebar from "../components/Sidebar";
 import ChatArea from "../components/ChatArea";
 import { useEffect, useState } from "react";
-import io from "socket.io-client";
 import {
   Flex,
   Box,
@@ -14,6 +13,7 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
+import io from "socket.io-client";
 
 const EndPoint = import.meta.env.VITE_API_URL;
 

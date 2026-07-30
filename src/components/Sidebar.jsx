@@ -121,7 +121,7 @@ const Sidebar = ({ setSelectedGroup }) => {
     const token = userInfo?.token;
     try {
       const { data } = await axios.post(
-        `{REACT_APP_API_URL}/api/groups/${groupId}/join`,
+        `${REACT_APP_API_URL}/api/groups/${groupId}/join`,
         {},
         {
           headers: {
@@ -138,6 +138,8 @@ const Sidebar = ({ setSelectedGroup }) => {
         isClosable: true,
       });
     } catch (error) {
+      console.log("Error: ", error);
+
       toast({
         title: "Error",
         description: error?.response?.data?.message || "an error occured!",
